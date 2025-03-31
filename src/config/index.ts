@@ -3,10 +3,12 @@
  * Centralizes all configuration options and provides validation
  */
 
+import "dotenv/config";
+
 // No need to import process as it's a global in Node.js
 
 // Default Shopify API version - can be overridden with environment variable
-const DEFAULT_API_VERSION = '2023-10';
+const DEFAULT_API_VERSION = "2023-10";
 
 export interface ShopifyConfig {
   accessToken: string;
@@ -41,4 +43,4 @@ export function loadConfig(): ShopifyConfig {
 }
 
 // Export a singleton instance of the config
-export const config = loadConfig(); 
+export const config = loadConfig();

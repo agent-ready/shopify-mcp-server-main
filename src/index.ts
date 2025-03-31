@@ -8,7 +8,7 @@ import { registerCustomerTools } from "./tools/customerTools.js";
 import { registerOrderTools } from "./tools/orderTools.js";
 import { registerShopTools } from "./tools/shopTools.js";
 import { registerDiscountTools } from "./tools/discountTools.js";
-import { registerWebhookTools } from "./tools/webhookTools.js";
+// import { registerWebhookTools } from "./tools/webhookTools.js";
 
 /**
  * Main entry point for the Shopify MCP Server
@@ -21,29 +21,31 @@ async function main() {
     console.error(`Received ${signal}. Shutting down gracefully...`);
     if (server) {
       try {
-        await server.disconnect();
+        await server.close();
       } catch (error) {
-        console.error('Error during shutdown:', error);
+        console.error("Error during shutdown:", error);
       }
     }
     process.exit(0);
   }
 
   // Handle graceful shutdown
-  process.on('SIGTERM', () => shutdown('SIGTERM'));
-  process.on('SIGINT', () => shutdown('SIGINT'));
-  
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
+
   try {
     // Validate required environment variables
     if (!process.env.SHOPIFY_ACCESS_TOKEN || !process.env.MYSHOPIFY_DOMAIN) {
-      throw new Error('Missing required environment variables. Please check README.md for setup instructions.');
+      throw new Error(
+        "Missing required environment variables. Please check README.md for setup instructions."
+      );
     }
 
     // Create the MCP server
     server = new McpServer({
       name: "shopify-tools",
       version: "1.0.1",
-      description: "Shopify API integration tools for MCP"
+      description: "Shopify API integration tools for MCP",
     });
 
     // Register all tools
@@ -52,15 +54,15 @@ async function main() {
     registerOrderTools(server);
     registerShopTools(server);
     registerDiscountTools(server);
-    registerWebhookTools(server);
+    // registerWebhookTools(server);
 
     // Connect to the transport
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    
+
     console.error("Shopify MCP Server running on stdio");
     console.error(`Connected to shop: ${process.env.MYSHOPIFY_DOMAIN}`);
-    
+
     // Keep the process running
     process.stdin.resume();
   } catch (error) {

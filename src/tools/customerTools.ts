@@ -29,7 +29,10 @@ export function registerCustomerTools(server: McpServer): void {
     "get-customers",
     "Get shopify customers with pagination support",
     {
-      limit: z.number().optional().describe("Maximum number of customers to return"),
+      limit: z
+        .number()
+        .optional()
+        .describe("Maximum number of customers to return"),
       next: z.string().optional().describe("Next page cursor"),
     },
     async ({ limit, next }: GetCustomersInput) => {
@@ -49,46 +52,49 @@ export function registerCustomerTools(server: McpServer): void {
   );
 
   // Tag Customer Tool
-  server.tool(
-    "tag-customer",
-    "Add tags to a customer",
-    {
-      customerId: z.string().describe("Customer ID to tag"),
-      tags: z.array(z.string()).describe("Tags to add to the customer"),
-    },
-    async ({ customerId, tags }: TagCustomerInput) => {
-      const client = new ShopifyClient();
-      try {
-        const success = await client.tagCustomer(
-          config.accessToken,
-          config.shopDomain,
-          tags,
-          customerId
-        );
-        
-        if (success) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Successfully tagged customer ${customerId} with tags: ${tags.join(", ")}`,
-              },
-            ],
-          };
-        } else {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Failed to tag customer ${customerId}`,
-              },
-            ],
-            isError: true,
-          };
-        }
-      } catch (error) {
-        return handleError(`Failed to tag customer ${customerId}`, error);
-      }
-    }
-  );
-} 
+
+  // not available on shopify client !!
+
+  // server.tool(
+  //   "tag-customer",
+  //   "Add tags to a customer",
+  //   {
+  //     customerId: z.string().describe("Customer ID to tag"),
+  //     tags: z.array(z.string()).describe("Tags to add to the customer"),
+  //   },
+  //   async ({ customerId, tags }: TagCustomerInput) => {
+  //     const client = new ShopifyClient();
+  //     try {
+  //       const success = await client.ta(
+  //         config.accessToken,
+  //         config.shopDomain,
+  //         tags,
+  //         customerId
+  //       );
+
+  //       if (success) {
+  //         return {
+  //           content: [
+  //             {
+  //               type: "text",
+  //               text: `Successfully tagged customer ${customerId} with tags: ${tags.join(", ")}`,
+  //             },
+  //           ],
+  //         };
+  //       } else {
+  //         return {
+  //           content: [
+  //             {
+  //               type: "text",
+  //               text: `Failed to tag customer ${customerId}`,
+  //             },
+  //           ],
+  //           isError: true,
+  //         };
+  //       }
+  //     } catch (error) {
+  //       return handleError(`Failed to tag customer ${customerId}`, error);
+  //     }
+  //   }
+  // );
+}
